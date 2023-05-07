@@ -83,6 +83,13 @@ HVAC_MODE_SETS = {
         HVAC_MODE_HEAT: "1",
         HVAC_MODE_AUTO: "0",
     },
+    "heat/heat_cool/cool/dry/fan_only": {
+        HVAC_MODE_HEAT: "heat",
+        HVAC_MODE_AUTO: "heat_cool",
+        HVAC_MODE_COOL: "cool",
+        HVAC_MODE_DRY: "dry",
+        HVAC_MODE_FAN_ONLY: "fan_only",
+    },
     "cold/hot/wet/wind/auto": {
         HVAC_MODE_HEAT: "hot",
         HVAC_MODE_AUTO: "auto",
@@ -100,7 +107,11 @@ HVAC_ACTION_SETS = {
         CURRENT_HVAC_HEAT: "open",
         CURRENT_HVAC_IDLE: "close",
     },
-    "heating/no_heating": {
+    "heating/off": {
+        CURRENT_HVAC_HEAT: "heating",
+        CURRENT_HVAC_IDLE: "off",
+    },
+    "heating/off": {
         CURRENT_HVAC_HEAT: "heating",
         CURRENT_HVAC_IDLE: "no_heating",
     },

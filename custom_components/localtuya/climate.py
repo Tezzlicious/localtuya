@@ -23,9 +23,7 @@ from homeassistant.components.climate.const import (
     PRESET_ECO,
     PRESET_HOME,
     PRESET_NONE,
-    SUPPORT_PRESET_MODE,
-    SUPPORT_TARGET_TEMPERATURE,
-    SUPPORT_TARGET_TEMPERATURE_RANGE,
+    ClimateEntityFeature,
 )
 from homeassistant.const import (
     ATTR_TEMPERATURE,
@@ -33,8 +31,7 @@ from homeassistant.const import (
     PRECISION_HALVES,
     PRECISION_TENTHS,
     PRECISION_WHOLE,
-    TEMP_CELSIUS,
-    TEMP_FAHRENHEIT,
+    UnitOfTemperature,
 )
 
 from .common import LocalTuyaEntity, async_setup_entry
@@ -212,11 +209,11 @@ class LocaltuyaClimate(LocalTuyaEntity, ClimateEntity):
         """Flag supported features."""
         supported_features = 0
         if self.has_config(CONF_TARGET_TEMPERATURE_DP):
-            supported_features = supported_features | SUPPORT_TARGET_TEMPERATURE
+            supported_features = supported_features | ClimateEntityFeature.TARGET_TEMPERATURE
         if self.has_config(CONF_MAX_TEMP_DP):
-            supported_features = supported_features | SUPPORT_TARGET_TEMPERATURE_RANGE
+            supported_features = supported_features | ClimateEntityFeature.TARGET_TEMPERATURE_RANGE
         if self.has_config(CONF_PRESET_DP) or self.has_config(CONF_ECO_DP):
-            supported_features = supported_features | SUPPORT_PRESET_MODE
+            supported_features = supported_features | ClimateEntityFeature.PRESET_MODE
         return supported_features
 
     @property
@@ -236,8 +233,8 @@ class LocaltuyaClimate(LocalTuyaEntity, ClimateEntity):
             self._config.get(CONF_TEMPERATURE_UNIT, DEFAULT_TEMPERATURE_UNIT)
             == TEMPERATURE_FAHRENHEIT
         ):
-            return TEMP_FAHRENHEIT
-        return TEMP_CELSIUS
+            return UnitOfTemperature.FAHRENHEIT
+        return UnitOfTemperature.CELSIUS
 
     @property
     def hvac_mode(self):
@@ -364,14 +361,22 @@ class LocaltuyaClimate(LocalTuyaEntity, ClimateEntity):
         """Return the minimum temperature."""
         if self.has_config(CONF_MIN_TEMP_DP):
             return self.dps_conf(CONF_MIN_TEMP_DP)
-        return DEFAULT_MIN_TEMP
+        # DEFAULT_MIN_TEMP is in C
+        if self.temperature_unit == UnitOfTemperature.FAHRENHEIT:
+            return DEFAULT_MIN_TEMP * 1.8 + 32
+        else:
+            return DEFAULT_MIN_TEMP
 
     @property
     def max_temp(self):
         """Return the maximum temperature."""
         if self.has_config(CONF_MAX_TEMP_DP):
             return self.dps_conf(CONF_MAX_TEMP_DP)
-        return DEFAULT_MAX_TEMP
+        # DEFAULT_MAX_TEMP is in C
+        if self.temperature_unit == UnitOfTemperature.FAHRENHEIT:
+            return DEFAULT_MAX_TEMP * 1.8 + 32
+        else:
+            return DEFAULT_MAX_TEMP
 
     def status_updated(self):
         """Device status was updated."""

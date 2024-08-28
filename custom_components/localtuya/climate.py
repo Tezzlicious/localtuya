@@ -129,7 +129,11 @@ HVAC_ACTION_SETS = {
         HVACAction.HEATING: "open",
         HVACAction.IDLE: "close",
     },
-    "heating/no_heating": {
+    "heating/off": {
+        CURRENT_HVAC_HEAT: "heating",
+        CURRENT_HVAC_IDLE: "off",
+    },
+    "heating/off": {        
         HVACAction.HEATING: "heating",
         HVACAction.IDLE: "no_heating",
     },
